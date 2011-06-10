@@ -48,7 +48,6 @@ public class AndroidCamera extends Activity implements SurfaceHolder.Callback{
 		this.addContentView(viewControl, layoutParamsControl);
     
 		Button buttonTakePicture = (Button)findViewById(R.id.takepicture);
-		//Button buttonLoadPicture = (Button)findViewById(R.id.editpicture);
 		buttonTakePicture.setOnClickListener(new Button.OnClickListener(){
 
 			@Override
@@ -56,16 +55,6 @@ public class AndroidCamera extends Activity implements SurfaceHolder.Callback{
 				// 	TODO Auto-generated method stub
 				camera.takePicture(myShutterCallback,myPictureCallback_RAW, myPictureCallback_JPG);
 			}});
-		//buttonLoadPicture.setOnClickListener(new Button.OnClickListener(){
-			//@Override
-			//public void onClick(View arg0){
-				//Toast.makeText(androidcamera.this,"I'll be with you in a second, Sir.",Toast.LENGTH_LONG).show();
-				//Intent send = new Intent(androidcamera.this, Send.class);
-				//startActivity(send);
-				
-				
-				
-			//}});
 		}
 	
 	ShutterCallback myShutterCallback = new ShutterCallback(){
@@ -97,32 +86,7 @@ public class AndroidCamera extends Activity implements SurfaceHolder.Callback{
 						imageFileOS.write(arg0);
 						imageFileOS.flush();
 						imageFileOS.close();
-						
-						/*AlertDialog.Builder builder = new AlertDialog.Builder(androidcamera.this);
-						builder.setMessage("Would you like to send this picture?")
-							.setCancelable(false)
-							.setPositiveButton("Yes",new DialogInterface.OnClickListener(){
-								public void onClick(DialogInterface dialog, int id){
-									//Intent send = new Intent(androidcamera.this, Send.class);
-									//startActivity(send);
-									send test = new send();
-									test.Send();
-								}
-							})
-							.setNegativeButton("No", new DialogInterface.OnClickListener() {
-							
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.cancel();
-								
-								}
-							});
-						builder.create().show();*/
-						Toast.makeText(androidcamera.this, "Image Saved: "+uriTarget.toString(),Toast.LENGTH_LONG).show();
-						
-						//Bitmap test = createBitmap();
-						//OutputStream stream = new FileOutputStream("/sdcard/test.png");
-						//test.compress(CompressFormat.JPEG, 80, stream);
-						
+						Toast.makeText(AndroidCamera.this, "Image Saved: "+uriTarget.toString(),Toast.LENGTH_LONG).show();
 						
 					}catch(FileNotFoundException e){
 						//TODO Auto-generated catch block
@@ -168,23 +132,5 @@ public class AndroidCamera extends Activity implements SurfaceHolder.Callback{
 					camera = null;
 					previewing = false;
 				}
-				/*public class send {
-					public void Send(ProfileVO pvo){
-						Log.i(getClass().getSimpleName(),"send task - start");
-						HttpParams p = new BasicHttpParams();
-						p.setParameter("test", pvo.getName());
-						
-						HttpClient client = new DefaultHttpClient(p);
-						try{
-							HttpResponse response = client.execute(new HttpGet(""));
-							InputStream is = response.getEntity().getContent();
-						}catch (ClientProtocolException e){
-							e.printStackTrace();
-						}catch (IOException e){
-							e.printStackTrace();
-						}
-						Log.i(getClass().getSimpleName(),"send task - end");
-					}
-				}*/
 }
 
