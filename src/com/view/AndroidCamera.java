@@ -1,4 +1,4 @@
-package com.maxconncoll.androidcamera;
+package com.view;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
