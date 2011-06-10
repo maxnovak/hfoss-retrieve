@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, view!</string>
     <string name="app_name">view</string>
+    <string name="take_picture">Take Picture</string>
 </resources>
