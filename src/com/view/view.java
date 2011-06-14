@@ -137,6 +137,16 @@ public class view extends Activity {
 				}catch(Exception e){
 					Log.e("log_tag", "Error in http connection "+e.toString());}
 			}});
+         
+    buttonTakePicture.setOnClickListener(new Button.OnClickListener(){
+    //Button to activate the camera
+			@Override
+			public void onClick(View v) {
+				Intent takePicture = new Intent(view.this, AndroidCamera.class);
+				startActivity(takePicture);
+			}
+			
+		});
 }
     
 
