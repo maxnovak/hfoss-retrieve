@@ -18,6 +18,13 @@
  android:layout_height="wrap_content"
  android:text="Send Image"
  />
+ 
+ <Button
+   android:id="@+id/takepicture"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Take a new Picture"
+ 
 <TextView
  android:id="@+id/targeturi"
  android:layout_width="fill_parent"
