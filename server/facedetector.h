@@ -48,7 +48,8 @@ public:
 		std::cout<<"resizing"<<std::endl;
 		//procImage=cvCloneImage(img);
 		cvResize(img,procImage,CV_INTER_NN);
-		//cvSaveImage("ProcImage",procImage);
+		cvSaveImage("ProcImage.jpg",procImage);
+    std::cout<<"image saved"<<std::endl;
 		cvShowImage( "Output", procImage);
 		cvWaitKey();
 
