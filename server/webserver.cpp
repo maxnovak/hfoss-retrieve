@@ -71,20 +71,16 @@ unsigned webserver::Request(void* ptr_s) {
   pic_buf= new char[pic_len];
 
 
- unsigned int buf_size=8;
  unsigned int index=0;
-
+ unsigned int length=0;
 
  
  while (index<pic_len){
 	
-    unsigned int length;
-	if (pic_len-index>buf_size){length=buf_size;}
-	else{length=pic_len-index;}
 
 	char *pic_buf0;
-    pic_buf0= new char[length];
-	s.ReceiveBytes(pic_buf0, length);
+    pic_buf0= new char[pic_len-length];
+	length=s.ReceiveBytes(pic_buf0,pic_len-length);
 
 	for (unsigned int k=0;k<length;k++){
 		pic_buf[index]=pic_buf0[k];
