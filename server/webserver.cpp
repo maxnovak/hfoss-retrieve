@@ -1,7 +1,7 @@
 /*
    WebServer.cpp
 
-   Copyright (C) 2003-2004 René Nyffenegger
+   Copyright (C) 2003-2004 RenÃ© Nyffenegger
 
    This source code is provided 'as-is', without any express or implied
    warranty. In no event will the author be held liable for any damages
@@ -21,7 +21,7 @@
 
    3. This notice may not be removed or altered from any source distribution.
 
-   René Nyffenegger rene.nyffenegger@adp-gmbh.ch
+   RenÃ© Nyffenegger rene.nyffenegger@adp-gmbh.ch
 
    Thanks to Tom Lynn who pointed out an error in this source code.
 */
@@ -114,23 +114,17 @@ unsigned webserver::Request(void* ptr_s) {
 
 
 
-
-   IplImage* img = cvLoadImage( "image2.jpg" );
-   cvNamedWindow( "Example1", CV_WINDOW_AUTOSIZE );
-   cvShowImage( "Example1", img );
-   cvWaitKey(0);
-   cvReleaseImage( &img );
-
+  std::cout<<"loading image"<<std::endl;
+	IplImage* img = cvLoadImage( "image2.jpg" );
+	std::cout<<"finding faces"<<std::endl;
+	facedetector::detect_and_draw(img);
+	std::cout<<"done"<<std::endl;
 
 
 
 
 
 
-
-   
-
-   cvDestroyWindow( "Example1" );
 
 
   delete[] pic_buf;
