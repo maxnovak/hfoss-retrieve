@@ -1,0 +1,377 @@
+package com.hfossretrieve;
+
+
+
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+ 
+
+
+public class Retrieve extends Activity implements RetrieveConstants{
+	Bitmap bitmap;
+	Bitmap backImage;
+	//TextView textTargetUri;
+	TextView flag;
+	static ImageView targetImage;
+	InputStream is;
+	String location;
+	Uri targetUri;
+	public static Bitmap mBitmap=null;
+	Button buttonLoadImage;
+	Button buttonTakePicture;
+	Button buttonSendImage;
+	Button buttonCircleSign;
+	//Button buttonRecordAudio;
+	//Button buttonSendAudio;
+	public static int width;
+	public static int height;
+	public static int pictureSource = NULL;
+	public static boolean resized = false;
+	
+	//public String textTargetUri;
+	 
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		//onCreate begins the activity and initializes the display etc
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		buttonLoadImage = (Button)findViewById(R.id.loadimage);
+		buttonTakePicture = (Button)findViewById(R.id.takepicture);
+		buttonSendImage = (Button)findViewById(R.id.sendimage);
+		buttonCircleSign = (Button)findViewById(R.id.draw);
+		//buttonRecordAudio = (Button)findViewById(R.id.audio);
+		//buttonSendAudio = (Button)findViewById(R.id.sendaudio);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
+		Display display = getWindowManager().getDefaultDisplay(); 
+		width = display.getWidth();
+		height = display.getHeight();
+		
+		
+		
+		
+		//textTargetUri = (TextView)findViewById(R.id.targeturi);
+		flag = (TextView)findViewById(R.id.flag); 
+		targetImage = (ImageView)findViewById(R.id.targetimage);
+		//flag.setText("start");
+		buttonSendImage.setEnabled(false);
+		buttonCircleSign.setEnabled(false);
+		//buttonSendAudio.setEnabled(false);
+		/*
+		buttonRecordAudio.setOnClickListener(new Button.OnClickListener(){
+			@Override
+			public void onClick(View arg0){
+				Intent recordAudio = new Intent(Retrieve.this, Audio.class);
+				startActivity(recordAudio);
+			}
+		});*/
+		
+		
+		buttonTakePicture.setOnClickListener(new Button.OnClickListener(){
+			//Button that starts the camera activity for taking a new picture
+			@Override
+			public void onClick(View arg0){
+				resized=false;
+				Intent takePicture = new Intent(Retrieve.this, AndroidCamera.class);
+				startActivity(takePicture);
+				
+			}
+		});
+		
+		buttonCircleSign.setOnClickListener(new Button.OnClickListener(){
+			//Button that starts a new activity to select a portion of the image for analysis
+			@Override
+			public void onClick(View arg0){
+				if (resized!=true){
+					Matrix matrix = new Matrix();
+					int oldWidth = mBitmap.getWidth();
+					int oldHeight = mBitmap.getHeight();
+					float newWidth = (float) (oldWidth/5.3);
+					float newHeight = (float) (oldHeight/5.3);
+					float scaleWidth = ((float)newWidth)/oldWidth;
+					float scaleHeight = ((float)newHeight)/oldHeight;
+					matrix.postScale(scaleWidth, scaleHeight);
+					mBitmap = Bitmap.createBitmap(mBitmap,0,0,oldWidth,oldHeight, matrix, false);
+					resized=true;
+				}
+				
+				
+				Intent drawCircle = new Intent(Retrieve.this, draw.class);
+				startActivity(drawCircle);
+				
+			}
+			
+		});
+		
+		
+		buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
+			//Button that starts a new activity to select a picture for analysis
+			@Override
+			public void onClick(View arg0) {
+				mBitmap = null;
+ 	 			Intent intent = new Intent(Intent.ACTION_PICK,
+ 	 					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+ 	 			startActivityForResult(intent, 0);
+ 	 			
+			}});
+
+		/* 
+		 * Not implemented yet 
+		buttonSendAudio.setOnClickListener(new Button.OnClickListener(){
+			
+			@Override
+			public void onClick(View arg0){
+				Socket kkSocket = null;
+		        OutputStream out1=null;
+		        int pic_length;
+		        byte[] pic_len_bytes = new byte[4];
+		        BufferedReader buffer;
+		        //InputStream in1;
+		    	
+		        
+				
+				
+				ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+				//mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+				
+				byte [] byteArray = byteStream.toByteArray();
+				
+				
+				pic_length=byteArray.length;
+			     
+				
+				
+		        for (int i = 0; i < 4; i++) {
+		            int offset = (pic_len_bytes.length - 1 - i) * 8;
+		            pic_len_bytes[3-i] = (byte) ((pic_length >>> offset) & 0xFF);
+		        }
+				
+		     
+				 try {
+			            
+					 	//int index0=0;
+					 	//int total_bytes=4;
+					 	kkSocket = new Socket("136.244.225.97", 8080);
+			            out1 = kkSocket.getOutputStream();
+			            out1.write(pic_len_bytes);
+			            out1.write(byteArray);
+			            buffer = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
+			           // in1 = kkSocket.getInputStream();
+			            String fromServer = buffer.readLine();
+			            flag.setText(fromServer);
+			        } catch (UnknownHostException e) {
+			        	flag.setText("HostException");
+			            
+			        } catch (IOException e) {
+			        	flag.setText("IOException");
+			        }
+			}
+		});*/
+		
+		
+		buttonSendImage.setOnClickListener(new Button.OnClickListener(){
+			//Sends the selected picture to the server for analysis
+			@Override
+			public void onClick(View arg0) {
+				Socket kkSocket = null;
+		        OutputStream out1=null;
+		        int pic_length;
+		        byte[] pic_len_bytes = new byte[4];
+		        BufferedReader in;
+		        //InputStream in1;
+		    	
+		        
+				
+				
+				ByteArrayOutputStream bao = new ByteArrayOutputStream();
+				mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+				byte [] ba = bao.toByteArray();
+				
+				
+				pic_length=ba.length;
+			     
+				
+				
+		        for (int i = 0; i < 4; i++) {
+		            int offset = (pic_len_bytes.length - 1 - i) * 8;
+		            pic_len_bytes[3-i] = (byte) ((pic_length >>> offset) & 0xFF);
+		        }
+				
+		     
+				 try {
+			            
+					 	//int index0=0;
+					 	//int total_bytes=4;
+					 	kkSocket = new Socket("136.244.225.100", 8080);
+			            out1 = kkSocket.getOutputStream();
+			            out1.write(pic_len_bytes);
+			            out1.write(ba);
+			            in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
+			           // in1 = kkSocket.getInputStream();
+			            String fromServer = in.readLine();
+			            flag.setText(fromServer);
+			        } catch (UnknownHostException e) {
+			        	flag.setText("HostException");
+			            
+			        } catch (IOException e) {
+			        	flag.setText("IOException");
+			        }}		
+			});
+	}
+	
+	
+	
+	
+ 	@Override
+ 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+ 		//Collects the information from the selected picture
+ 		
+ 		super.onActivityResult(requestCode, resultCode, data);
+
+ 		if (resultCode == RESULT_OK){
+ 			targetUri = data.getData();
+ 			//textTargetUri = targetUri.toString();
+ 			
+ 			
+ 			try {
+ 				//bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+ 				mBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+ 				/*Matrix matrix = new Matrix();
+ 		        int oldWidth = mBitmap.getWidth();
+ 		        int oldHeight = mBitmap.getHeight();
+ 		        float newWidth = (float) (oldWidth/5.3);
+ 		        float newHeight = (float) (oldHeight/5.3);
+ 		        float scaleWidth = ((float)newWidth)/oldWidth;
+ 		        float scaleHeight = ((float)newHeight)/oldHeight;
+ 		        matrix.postScale(scaleWidth, scaleHeight);
+ 		        mBitmap = Bitmap.createBitmap(mBitmap,0,0,oldWidth,oldHeight, matrix, false);
+ 				*/
+ 				
+ 				
+ 				
+ 				
+ 				
+ 				targetImage.setImageBitmap(mBitmap);
+ 				
+ 				Retrieve.pictureSource = SELECTED_PHOTO;
+ 			} catch (FileNotFoundException e) {
+ 				e.printStackTrace();
+ 			}
+ 			resized=false;
+ 		}	
+ 	}
+ 	
+ 	
+ 	@Override
+ 	protected void onStop(){
+ 		super.onStop();
+ 		Retrieve.pictureSource = NULL;
+ 	}
+ 	
+ 	
+ 	@Override
+ 	protected void onResume(){
+ 		super.onPause();
+ 		
+ 		if (Retrieve.pictureSource == NULL){
+ 			targetImage.setImageBitmap(null);
+ 			buttonSendImage.setEnabled(false);
+			buttonCircleSign.setEnabled(false);
+ 		}
+ 		
+ 		else if (Retrieve.pictureSource == SELECTED_PHOTO){//picture selected from gallery
+ 			targetImage.setImageBitmap(mBitmap);
+ 			buttonSendImage.setEnabled(true);
+			buttonCircleSign.setEnabled(true);
+ 		} 		
+ 		else if (Retrieve.pictureSource == CAMERA_IMAGE){//picture taken
+ 			if (AndroidCamera.photo!=null){
+ 	 			mBitmap = AndroidCamera.photo;
+ 	 			targetImage.setImageBitmap(mBitmap);
+ 	 	 		buttonSendImage.setEnabled(true);
+ 				buttonCircleSign.setEnabled(true);
+ 			}
+ 		} 		
+ 		else if (Retrieve.pictureSource == CROPPED_IMAGE){//circled selection
+ 			if (Panel.bitmap!=null){
+ 	 			mBitmap = Panel.bitmap;
+ 	 			targetImage.setImageBitmap(mBitmap);
+ 	 			buttonSendImage.setEnabled(true);
+ 				buttonCircleSign.setEnabled(true);
+ 	 		}
+ 		}
+ 		
+ 		
+ 	}
+ 	
+ 	@Override
+ 	public boolean onCreateOptionsMenu(Menu menu){
+ 		MenuInflater inflater = getMenuInflater();
+ 		inflater.inflate(R.menu.menu, menu);
+ 		return true;
+ 	}
+ 	
+ 	@Override
+ 	public boolean onOptionsItemSelected(MenuItem item){
+ 		//AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+ 		if(R.id.English==item.getItemId()){
+ 			setContentView(R.layout.main);
+ 		}
+ 		else if(R.id.Chinese==item.getItemId()){
+ 			setContentView(R.layout.main_ch);
+ 		}
+		return false;
+ 		
+ 	}
+ 	
+ 	
+ 	
+ 	
+ 	/*
+ 	private void save(Bitmap resizedBitmap) {
+    	
+    	String filename = "test";
+    	ContentValues values = new ContentValues();
+    	
+    	values.put(Images.Media.TITLE,filename);
+    	values.put(Images.Media.DATE_ADDED, System.currentTimeMillis());
+    	values.put(Images.Media.MIME_TYPE,"image/jpeg");
+    	
+    	Uri uri = this.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+    	try{
+    		OutputStream outStream = this.getContentResolver().openOutputStream(uri);
+    		resizedBitmap.compress(Bitmap.CompressFormat.JPEG,100,outStream);
+    		outStream.flush();
+    		outStream.close();
+    		Toast.makeText(retrieve.this, "Image Saved: "+uri.toString(),Toast.LENGTH_LONG).show();
+    	}catch(FileNotFoundException e){e.printStackTrace();
+    	}catch(IOException e){e.printStackTrace();}
+    }
+    */
+}
